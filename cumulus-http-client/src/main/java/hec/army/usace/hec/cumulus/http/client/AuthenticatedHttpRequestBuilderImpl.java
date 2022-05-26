@@ -8,6 +8,7 @@ import java.time.ZonedDateTime;
 import java.util.Date;
 import mil.army.usace.hec.cwms.http.client.ApiConnectionInfo;
 import mil.army.usace.hec.cwms.http.client.HttpRequestBuilderImpl;
+import mil.army.usace.hec.cwms.http.client.model.OAuth2Token;
 
 public class AuthenticatedHttpRequestBuilderImpl extends HttpRequestBuilderImpl {
 
@@ -23,11 +24,11 @@ public class AuthenticatedHttpRequestBuilderImpl extends HttpRequestBuilderImpl 
      * @param token             - JWT token
      * @throws IOException      - thrown if request failed
      */
-    public AuthenticatedHttpRequestBuilderImpl(ApiConnectionInfo apiConnectionInfo, String endpoint, String token)
+    public AuthenticatedHttpRequestBuilderImpl(ApiConnectionInfo apiConnectionInfo, String endpoint, OAuth2Token token)
         throws IOException {
 
         super(apiConnectionInfo, endpoint);
-        addTokenIfValid(token);
+        addTokenIfValid(token.getAccessToken());
     }
 
     //package scoped for testing
@@ -44,7 +45,7 @@ public class AuthenticatedHttpRequestBuilderImpl extends HttpRequestBuilderImpl 
             }
             addQueryHeader(AUTHORIZATION_HEADER, "Bearer " + token);
         } catch (JWTDecodeException ex) {
-            throw new IOException("Invalid JSON Web Token");
+            throw new IOException(token + " is not a JSON Web Token");
         }
     }
 
@@ -55,6 +56,5 @@ public class AuthenticatedHttpRequestBuilderImpl extends HttpRequestBuilderImpl 
         }
         return Integer.parseInt(bufferMillisStr);
     }
-
 
 }
