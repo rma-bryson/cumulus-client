@@ -56,5 +56,4 @@ public class AuthenticatedHttpRequestBuilderImpl extends HttpRequestBuilderImpl 
         return Integer.parseInt(bufferMillisStr);
     }
 
-
 }
