@@ -10,11 +10,9 @@ package hec.army.usace.hec.cumulus.http.client;
 /**
  *
  */
-public class CACCertificateException extends RuntimeException
-{
-	public CACCertificateException(String message)
-	{
-		super(message);
-	}
+public class CACCertificateException extends RuntimeException {
+    public CACCertificateException(String message) {
+        super(message);
+    }
 
 }

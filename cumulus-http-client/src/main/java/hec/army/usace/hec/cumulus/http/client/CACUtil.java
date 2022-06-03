@@ -1,6 +1,5 @@
 package hec.army.usace.hec.cumulus.http.client;
 
-import java.io.File;
 import java.io.IOException;
 import java.security.KeyManagementException;
 import java.security.KeyStoreException;
@@ -21,14 +20,18 @@ public final class CACUtil {
         throw new AssertionError("Utility class");
     }
 
-    public static SSLSocketFactory buildSslSocketFactory(File propertyFile) throws KeyStoreException {
+    public static SSLSocketFactory buildSslSocketFactory() throws KeyStoreException {
+        return buildSslSocketFactory(new char[0]);
+    }
+
+    public static SSLSocketFactory buildSslSocketFactory(char[] certificateAlias) throws KeyStoreException {
         try {
             SSLContext sc = SSLContext.getInstance("TLS");
-            sc.init(new KeyManager[] {CACKeyManager.getKeyManager(new char[0])},
-                new TrustManager[] {CACTrustManager.getTrustManager(propertyFile)}, null);
+            sc.init(new KeyManager[] {CACKeyManager.getKeyManager(certificateAlias)},
+                new TrustManager[] {CACTrustManager.getTrustManager()}, null);
             return sc.getSocketFactory();
-        } catch (NoSuchAlgorithmException | CertificateException | KeyManagementException | IOException var2) {
-            throw new KeyStoreException(var2);
+        } catch (IOException | NoSuchAlgorithmException | CertificateException | KeyManagementException e) {
+            throw new KeyStoreException(e);
         }
     }
 
@@ -41,11 +44,9 @@ public final class CACUtil {
         node.put("certificate_alias", alias);
     }
 
-    static Optional<CertificateOption> getPreferredCertificateOption() throws KeyStoreException {
+    public static Optional<CertificateOption> getPreferredCertificateOption() throws KeyStoreException {
         Preferences node = PREFERENCE_NODE.node("last_cert_used");
         String alias = node.get("certificate_alias", "");
-        return getCertificateOptions().stream().filter((c) -> {
-            return alias.equals(c.getAlias());
-        }).findAny();
+        return getCertificateOptions().stream().filter(c -> alias.equals(c.getAlias())).findAny();
     }
 }

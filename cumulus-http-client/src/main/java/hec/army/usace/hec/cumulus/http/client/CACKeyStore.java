@@ -41,9 +41,6 @@ import org.bouncycastle.asn1.DLSequence;
 import org.bouncycastle.asn1.DLTaggedObject;
 import org.bouncycastle.cert.jcajce.JcaX509ExtensionUtils;
 
-/**
- *
- */
 final class CACKeyStore {
     private static final Logger LOGGER = Logger.getLogger(CACKeyStore.class.getName());
     private static CACKeyStore instance;

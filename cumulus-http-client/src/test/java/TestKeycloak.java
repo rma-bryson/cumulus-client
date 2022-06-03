@@ -2,13 +2,13 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import hec.army.usace.hec.cumulus.http.client.CACTrustManager;
 import hec.army.usace.hec.cumulus.http.client.CACUtil;
-import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.cert.CertificateException;
 import javax.net.ssl.SSLSocketFactory;
+import javax.net.ssl.X509TrustManager;
 import okhttp3.Call;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -36,10 +36,9 @@ class TestKeycloak {
         if (resourceUrl == null) {
             throw new IOException("Failed to get resource: " + resource);
         }
-        File propertyFile = new File(resourceUrl.getFile());
-        SSLSocketFactory sslSocketFactory = CACUtil.buildSslSocketFactory(propertyFile);
+        SSLSocketFactory sslSocketFactory = CACUtil.buildSslSocketFactory();
         OkHttpClient client = new OkHttpClient.Builder()
-            .sslSocketFactory(sslSocketFactory, CACTrustManager.getTrustManager(propertyFile))
+            .sslSocketFactory(sslSocketFactory, (X509TrustManager) CACTrustManager.getTrustManager())
             .build();
         Call call = client.newCall(new Request.Builder()
             .url(url)
