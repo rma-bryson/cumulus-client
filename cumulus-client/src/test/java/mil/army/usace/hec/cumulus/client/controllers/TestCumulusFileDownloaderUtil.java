@@ -75,7 +75,6 @@ class TestCumulusFileDownloaderUtil extends TestController{
             FileChannel fileChannel = fileOutputStream.getChannel();
             fileChannel.transferFrom(byteChannel, 0, Long.MAX_VALUE);
         }
-        listener.downloadComplete();
     }
 
     private String getMockedGeneratedFile(String resource) throws IOException {
@@ -117,21 +116,8 @@ class TestCumulusFileDownloaderUtil extends TestController{
     }
 
     private CumulusDssFileDownloadListener buildDownloadListener() {
-        return new CumulusDssFileDownloadListener() {
-            @Override
-            public void bytesRead(Download downloadData, int currentBytesRead, int totalBytesRead) {
-                //noop
-            }
-
-            @Override
-            public void downloadComplete() {
-                //noop
-            }
-
-            @Override
-            public void elapsedDownloadTimeUpdated(long elapsedTime) {
-
-            }
+        return (downloadData, currentBytesRead, totalBytesRead, elapsedTime) -> {
+            //noop
         };
     }
 }
